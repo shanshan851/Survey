@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lit.mapper.adminMapper" >
+
+    <sql id="adminFindCondition">
+        <where>
+            <if test="id!=null and id!=''">id=#{id}</if>
+            <if test="account!=null and account!=''">and account=#{account}</if>
+            <if test="password!=null and password!=''">and password=#{password}</if>
+            <if test="name!=null and name!=''">and `name`=#{name}</if>
+            <if test="phone!=null and phone!=''">and `phone`=#{phone}</if>
+
+        </where>
+    </sql>
+    <sql id="adminUpdateCondition">
+        <set>
+            <if test="account!=null and account!=''"> account=#{account},</if>
+            <if test="password!=null and password!=''"> password=#{password},</if>
+            <if test="name!=null and name!=''"> `name`=#{name},</if>
+            <if test="phone!=null and phone!=''"> `phone`=#{phone}</if>
+        </set>
+    </sql>
+    <!--    插入admin信息-->
+    <insert id="insert" parameterType="com.lit.entity.Admin" keyProperty="id" useGeneratedKeys="true">
+        insert into admin
+        values (null ,#{account},#{password},#{name},#{phone})
+    </insert>
+<!--    删除admin信息-->
+    <delete id="delete">
+        delete from admin
+        where id=#{id}
+    </delete>
+<!--    查询admin个数-->
+    <select id="count" resultType="int">
+        select count(1) from admin
+        <include refid="adminFindCondition"></include>
+    </select>
+<!--    查询符合条件的admin-->
+    <select id="query" resultType="com.lit.entity.Admin">
+        select * from admin
+        <include refid="adminFindCondition"></include>
+        limit #{page},#{limit}
+    </select>
+<!--    查询单个信息-->
+    <select id="detail" resultType="com.lit.entity.Admin">
+        select * from admin
+        <include refid="adminFindCondition"></include>
+
+    </select>
+    <select id="initQuery" resultType="com.lit.entity.Admin">
+        select * from admin
+        <include refid="adminFindCondition"></include>
+
+    </select>
+
+<!--   修改admin -->
+    <update id="update">
+        update admin
+        <include refid="adminUpdateCondition"></include>
+        where id=#{id}
+    </update>
+</mapper>

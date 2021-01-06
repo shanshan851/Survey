@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lit.mapper.surveyMapper">
+  <resultMap id="BaseResultMap" type="com.lit.entity.Survey">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="bounds" jdbcType="INTEGER" property="bounds" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="rules" jdbcType="INTEGER" property="rules" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+    <result column="statement" jdbcType="VARCHAR" property="statement" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+    <result column="bgimg" jdbcType="VARCHAR" property="bgimg" />
+    <result column="anon" jdbcType="INTEGER" property="anon" />
+    <result column="creater" jdbcType="INTEGER" property="creater" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="SurveyFindCondition">
+    <where>
+      <if test="id!=null and id!=''">id=#{id}</if>
+      <if test="title!=null and title!=''"> and title like concat('%',#{title},'%') </if>
+      <if test="remark!=null and remark!=''"> and `remark` =#{remark} </if>
+      <if test="bounds!=null and bounds!=''"> and `bounds` =#{bounds} </if>
+      <if test="startTime!=null and startTime!=''">and start_time =#{startTime} </if>
+      <if test="endTime!=null and endTime!=''">and `end_time` =#{endTime} </if>
+      <if test="rules!=null and rules!=''">and rules =#{rules} </if>
+      <if test="password!=null and password!=''">and password =#{password} </if>
+      <if test="url!=null">and `URL` =#{url} </if>
+      <if test="statement!=null and statement!=''">and statement =#{statement} </if>
+      <if test="logo!=null and logo!=''">and logo =#{logo} </if>
+      <if test="bgimg!=null and bgimg!=''">and bgimg =#{bgimg} </if>
+      <if test="anon!=null and anon!=''">and anon =#{anon} </if>
+      <if test="creater!=null and creater!=''">and creater =#{creater} </if>
+      <if test="createTime!=null and createTime!=''">and create_time =#{createTime} </if>
+    </where>
+  </sql>
+  <sql id="SurveyUpdateCondition">
+    <set>
+      <if test="title!=null and title!=''">  title =#{title} ,</if>
+      <if test="remark!=null and remark!=''">  `remark` =#{remark}, </if>
+      <if test="bounds!=null and bounds!=''">  `bounds` =#{bounds}, </if>
+      <if test="startTime!=null "> start_time =#{startTime}, </if>
+      <if test="endTime!=null"> `end_time` =#{endTime} ,</if>
+      <if test="rules!=null and rules!=''"> rules =#{rules}, </if>
+      <if test="password!=null and password!=''"> password =#{password}, </if>
+      <if test="url!=null"> `URL` =#{url} ,</if>
+      <if test="statement!=null and statement!=''"> statement =#{statement}, </if>
+      <if test="logo!=null and logo!=''"> logo =#{logo}, </if>
+      <if test="bgimg!=null and bgimg!=''"> bgimg =#{bgimg}, </if>
+      <if test="anon!=null and anon!=''"> anon =#{anon}, </if>
+      <if test="creater!=null and creater!=''"> creater =#{creater}, </if>
+      <if test="createTime!=null "> create_time =#{createTime} </if>
+    </set>
+  </sql>
+  <select id="query" resultMap="BaseResultMap">
+    select * from survey
+    <include refid="SurveyFindCondition"></include>
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into survey(id,title,remark,bounds,start_time,end_time,rules,password,URL,statement,logo,bgimg,anon,creater)
+    values (null ,#{title},#{remark},#{bounds},#{startTime},#{endTime},#{rules}
+    ,#{password},#{url},#{statement},#{logo},#{bgimg},#{anon},#{creater});
+  </insert>
+
+  <select id="count" resultType="int">
+    select count(1) from survey
+    <include refid="SurveyFindCondition"></include>
+  </select>
+
+  <update id="update">
+    update survey
+    <include refid="SurveyUpdateCondition"></include>
+    where id=#{id}
+  </update>
+
+  <select id="detail" resultMap="BaseResultMap">
+    select * from survey
+    <include refid="SurveyFindCondition"></include>
+    limit 1
+  </select>
+  <delete id="delete">
+    delete from survey
+    <include refid="SurveyFindCondition"></include>
+  </delete>
+  <update id="updateState" >
+    <![CDATA[UPDATE survey
+            SET statement =
+            CASE
+                    WHEN start_time <= now() AND end_time >= now() AND statement = '创建'
+                    THEN
+                        '执行中'
+                    WHEN end_time <= now() AND statement = '执行中' or statement = '创建'
+                    THEN
+                            '结束'
+            END
+            WHERE (start_time <= now() AND end_time >= now() AND statement = '创建' )
+                  OR
+                  (end_time <= now() AND statement = '执行中' or statement = '创建')
+    ]]>
+  </update>
+</mapper>

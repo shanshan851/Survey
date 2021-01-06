@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lit.mapper.questionMapper">
+  <resultMap id="BaseResultMap" type="com.lit.entity.Question">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="required" jdbcType="INTEGER" property="required" />
+    <result column="check_style" jdbcType="VARCHAR" property="checkStyle" />
+    <result column="order_style" jdbcType="INTEGER" property="orderStyle" />
+    <result column="show_style" jdbcType="INTEGER" property="showStyle" />
+    <result column="test" jdbcType="INTEGER" property="test" />
+    <result column="score" jdbcType="INTEGER" property="score" />
+    <result column="orderby" jdbcType="INTEGER" property="orderby" />
+    <result column="creater" jdbcType="INTEGER" property="creater" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="survey_id" jdbcType="INTEGER" property="surveyId" />
+  </resultMap>
+  <sql id="questionFindCondition">
+    <where>
+      <if test="id!=null">id=#{id}</if>
+      <if test="title!=null"> and title =#{title} </if>
+      <if test="remark!=null"> and `remark` =#{remark} </if>
+      <if test="type!=null"> and `type` =#{type} </if>
+      <if test="required!=null">and required =#{required} </if>
+      <if test="checkStyle!=null">and `check_style` =#{checkStyle} </if>
+      <if test="orderStyle!=null">and order_style =#{orderStyle} </if>
+      <if test="showStyle!=null">and show_style =#{showStyle} </if>
+      <if test="test!=null">and `test` =#{test} </if>
+      <if test="score!=null">and score =#{score} </if>
+      <if test="orderby!=null">and orderby =#{orderby} </if>
+      <if test="creater!=null">and creater =#{creater} </if>
+      <if test="createtime!=null">and createtime =#{createtime} </if>
+      <if test="surveyId!=null">and survey_id =#{surveyId} </if>
+    </where>
+  </sql>
+  <sql id="questionUpdateCondition">
+    <set>
+      <if test="id!=null">id=#{id},</if>
+      <if test="title!=null">  title =#{title}, </if>
+      <if test="remark!=null">  `remark` =#{remark} ,</if>
+      <if test="type!=null">  `type` =#{type} ,</if>
+      <if test="required!=null"> required =#{required}, </if>
+      <if test="checkStyle!=null"> `check_style` =#{checkStyle}, </if>
+      <if test="orderStyle!=null"> order_style =#{orderStyle}, </if>
+      <if test="showStyle!=null"> show_style =#{showStyle} ,</if>
+      <if test="test!=null"> `test` =#{test}, </if>
+      <if test="score!=null"> score =#{score} ,</if>
+      <if test="orderby!=null"> orderby =#{orderby} ,</if>
+      <if test="creater!=null"> creater =#{creater}, </if>
+      <if test="createtime!=null"> createtime =#{createtime} ,</if>
+      <if test="surveyId!=null"> survey_id =#{surveyId} </if>
+    </set>
+  </sql>
+  <select id="query" resultMap="BaseResultMap">
+    select * from question
+    <include refid="questionFindCondition"></include>
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into question
+    values (null ,#{title},#{remark},#{type},#{required},#{checkStyle},#{orderStyle}
+    ,#{showStyle},#{test},#{score},#{orderby},#{creater},#{createtime},#{surveyId});
+  </insert>
+
+  <select id="count" resultType="int">
+    select count(1) from question
+    <include refid="questionFindCondition"></include>
+  </select>
+
+  <update id="update">
+    update question
+    <include refid="questionUpdateCondition"></include>
+    where id=#{id}
+  </update>
+
+  <select id="detail" resultMap="BaseResultMap">
+    select * from question
+    <include refid="questionFindCondition"></include>
+    limit 1
+  </select>
+  <delete id="delete">
+    delete from question
+    <include refid="questionFindCondition"></include>
+  </delete>
+</mapper>

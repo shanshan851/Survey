@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lit.mapper.questionOptMapper">
+  <resultMap id="BaseResultMap" type="com.lit.entity.QuestionOpt">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="survey_id" jdbcType="INTEGER" property="surveyId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="question_id" jdbcType="INTEGER" property="questionId" />
+    <result column="option" jdbcType="VARCHAR" property="option" />
+    <result column="orderby" jdbcType="INTEGER" property="orderby" />
+    <result column="answer" jdbcType="INTEGER" property="answer" />
+  </resultMap>
+  <sql id="questionOptFindCondition">
+    <where>
+      <if test="surveyId!=null">survey_id =#{surveyId} </if>
+      <if test="type!=null"> and `type` =#{type} </if>
+      <if test="questionId!=null">and question_id =#{questionId} </if>
+      <if test="option!=null">and `option` =#{option} </if>
+      <if test="orderby!=null">and orderby =#{orderby} </if>
+      <if test="answer!=null">and answer =#{answer} </if>
+    </where>
+  </sql>
+  <sql id="questionOptUpdateCondition">
+    <set>
+      <if test="id!=null">id=#{id},</if>
+      <if test="surveyId!=null">survey_id =#{surveyId}, </if>
+      <if test="type!=null">  `type` =#{type}, </if>
+      <if test="questionId!=null"> question_id =#{questionId}, </if>
+      <if test="option!=null"> `option` =#{option}, </if>
+      <if test="orderby!=null"> orderby =#{orderby}, </if>
+      <if test="answer!=null"> answer =#{answer} </if>
+    </set>
+  </sql>
+  <select id="query" resultMap="BaseResultMap">
+    select * from question_opt
+    <include refid="questionOptFindCondition"></include>
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into question_opt
+    values (null ,#{surveyId},#{type},#{questionId},#{option},#{orderby},#{answer});
+  </insert>
+
+  <select id="count" resultType="int">
+    select count(1) from question_opt
+    <include refid="questionOptFindCondition"></include>
+  </select>
+
+  <update id="update">
+    update question_opt
+    <include refid="questionOptFindCondition"></include>
+    <include refid="questionOptUpdateCondition"></include>
+  </update>
+
+  <select id="detail" resultMap="BaseResultMap">
+    select * from question_opt
+    <include refid="questionOptFindCondition"></include>
+    limit 1
+  </select>
+  <delete id="delete">
+    delete from question_opt
+    where question_id=#{questionId}
+  </delete>
+</mapper>
